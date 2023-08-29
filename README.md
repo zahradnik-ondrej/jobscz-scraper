@@ -24,8 +24,8 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 ### Observations:
 
-**Puppeteer** is **~3.6944..** times faster than **Playwright** in this specific case.
-
 **Puppeteer** and **Selenium** are equally fast in this specific case. 
+
+**Puppeteer** and **Selenium** are **~3.6944..** times faster than **Playwright** in this specific case.
 
 </div>
