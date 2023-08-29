@@ -1,8 +1,8 @@
 <div align="center">
 
-# 💼 Jobs.cz Scraper
+# 💼 [Jobs.cz](https://www.jobs.cz/prace/) Scraper
 
-### A simple data scraper of Jobs.cz written in multiple JS/TS libraries.
+### A simple data scraper of [Jobs.cz](https://www.jobs.cz/prace/) written in multiple JS/TS libraries.
 
 A programming exercise and an experiment to determine which **JavaScript / TypeScript** library is the best option for web scraping.
 
@@ -31,7 +31,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 **Selenium** also offers many built-in functions but they are not as intuitive.  
 **Puppeteer** offers very little in this case and it's best to write your own wrapper functions which suit your specific needs but it offers the most modularity making this process easier compared to the others. [^2]
 
-Both **Playwright** and **Selenium** offer a support for multiple browsers *(unlike **Puppeteer** which has only experimental support for **Edge** and **Firefox**)*.
+Both **Playwright** and **Selenium** offer a support for multiple browsers *(unlike **Puppeteer** which has only experimental support for **Edge** via [puppeteer-core](https://www.npmjs.com/package/puppeteer-core) and **Firefox** via [puppeteer-firefox](https://www.npmjs.com/package/puppeteer-firefox))*.
 
 [^1]: Note that the **Puppeteer** script scrapes more data than the other scripts and also provides other functionalities because it's the library that I chose to go with in my project.
 
