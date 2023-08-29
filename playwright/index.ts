@@ -13,14 +13,14 @@ async function getText(page: Page, selector: string, timeout: number = 0.2): Pro
 }
 
 interface Post {
-    url?: string | null;
-    url2?: string;
-    title?: string;
-    salary?: string | null;
-    tags?: string[];
-    company?: string;
-    location?: string;
-    exactLocation?: { text: string, url: string | null } | null;
+    url?: string | null,
+    url2?: string,
+    title?: string,
+    salary?: string | null,
+    tags?: string[],
+    company?: string,
+    location?: string,
+    exactLocation?: { text: string, url: string | null } | null,
 }
 
 async function getSalary(page: Page, post: Post, postSelector: string): Promise<void> {

@@ -5,15 +5,137 @@ import fs, { WriteStream } from 'fs';
 
 const DEBUG: boolean = true;
 
-interface Post {
-    url?: string | null;
-    url2?: string;
-    title?: string;
-    salary?: string | null;
+interface Parameters {
     tags?: string[];
-    company?: string;
-    location?: string;
-    exactLocation?: { text: string, url: string | null } | null;
+    locality?:
+        'praha' |
+        'jihocesky-kraj' |
+        'jihomoravsky-kraj' |
+        'karlovarsky-kraj' |
+        'kralovohradecky-kraj' |
+        'liberecky-kraj' |
+        'moravskoslezsky-kraj' |
+        'olomoucky-kraj' |
+        'pardubicky-kraj' |
+        'plzensky-kraj' |
+        'stredocesky-kraj' |
+        'ustecky-kraj' |
+        'vysocina-kraj' |
+        'zlinsky-kraj' |
+        'slovensko' |
+        'nemecko' |
+        'polsko' |
+        'rakousko' |
+        'velka-britanie-a-severni-irsko' |
+        'irsko',
+    radius?: 10 | 20 | 30 | 40 | 50,
+    date?: '24h' | '3d' | '7d',
+    salary?: number,
+    employmentContract?: string[],
+    education?: 'primary' | 'high' | 'uni',
+    languageSkill?: string[],
+    arrangement?: 'partial-work-from-home' | 'work-mostly-from-home' | 'flexible-hours',
+    employer?: 'direct' | 'agency' | 'ngo',
+    suitableFor?: 'graduates' | 'retired' | 'maternity' | 'ukraine_refugees',
+    disabled?: boolean,
+}
+
+interface Post {
+    url?: string | null,
+    url2?: string,
+    title?: string,
+    salary?: string | null,
+    tags?: string[],
+    company?: string,
+    location?: string,
+    exactLocation?: { text: string, url: string | null } | null,
+}
+
+function constructURL(parameters: Parameters): string {
+    let url: string = 'https://www.jobs.cz/prace/';
+
+    if (parameters.locality) {
+        switch (parameters.locality) {
+            case 'praha':
+            case 'jihocesky-kraj':
+            case 'jihomoravsky-kraj':
+            case 'karlovarsky-kraj':
+            case 'kralovohradecky-kraj':
+            case 'liberecky-kraj':
+            case 'moravskoslezsky-kraj':
+            case 'olomoucky-kraj':
+            case 'pardubicky-kraj':
+            case 'plzensky-kraj':
+            case 'stredocesky-kraj':
+            case 'ustecky-kraj':
+            case 'vysocina-kraj':
+            case 'zlinsky-kraj':
+                url = `${url}${parameters.locality}/?`
+        }
+    } else {
+        url = `${url}?`
+    }
+
+    if (parameters.tags) {
+        for (let t: number = 0; t < parameters.tags.length; t++) {
+            url = `${url}q[]=${parameters.tags[t]}&`
+        }
+    }
+
+    if (parameters.locality) {
+        switch (parameters.locality) {
+            case 'slovensko':
+                url = `${url}locality[code]=C217&locality[label]=Slovensko&`
+            case 'nemecko':
+                url = `${url}locality[code]=C91&locality[label]=Německo&`
+            case 'polsko':
+                url = `${url}locality[code]=C196&locality[label]=Polsko&`
+            case 'rakousko':
+                url = `${url}locality[code]=C15&locality[label]=Rakousko&`
+            case 'velka-britanie-a-severni-irsko':
+                url = `${url}locality[code]=C250&locality[label]=Velká Británie a Severní Irsko&`
+            case 'irsko':
+                url = `${url}locality[code]=C117&locality[label]=Irsko&`
+        }
+    }
+
+    if (parameters.date) {
+        url = `${url}date=${parameters.date}&`
+    }
+
+    if (parameters.salary) {
+        if (parameters.salary >= 0 && parameters.salary <= 200000) {
+            url = `${url}salary=${parameters.salary}&`
+        }
+    }
+
+    if(parameters.education) {
+        url = `${url}education=${parameters.education}&`
+    }
+
+    if (parameters.arrangement) {
+        url = `${url}arrangement=${parameters.arrangement}&`
+    }
+
+    if (parameters.employer) {
+        url = `${url}employer=${parameters.employer}&`
+    }
+
+    if (parameters.disabled) {
+        url = `${url}disabled=1&`
+    } else {
+        url = `${url}suitable-for=${parameters.suitableFor}&`
+    }
+
+    if (parameters.locality === 'praha') {
+        if (parameters.radius) {
+            url = `${url}locality[radius]=${parameters.radius}`
+        } else {
+            url = `${url}locality[radius]=0`
+        }
+    }
+
+    return url;
 }
 
 async function getSalary(page: Page, post: Post, postSelector: string): Promise<void> {
@@ -135,6 +257,14 @@ function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boo
 }
 
 (async(): Promise<void> => {
+    const parameters: Parameters = {
+        tags: ['python', 'javascript'],
+        salary: 50000,
+        education: 'high',
+        arrangement: 'work-mostly-from-home',
+        employer: 'direct',
+    }
+
     const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
     writeStream.write('[\n');
     let firstPost: boolean = true;
@@ -145,7 +275,8 @@ function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boo
     browser = await puppeteer.launch(opts);
     page = await browser.newPage();
     page.setDefaultTimeout(ph.PAGE_OPTS.DEFAULT_TIMEOUT);
-    await page.goto('https://www.jobs.cz/prace/');
+    const url: string = constructURL(parameters);
+    await page.goto(url);
     await ph.timeout(1);
 
     let post: Post = {};

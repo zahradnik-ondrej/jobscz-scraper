@@ -6,14 +6,14 @@ import fs, {WriteStream} from 'fs';
 const DEBUG: boolean = true;
 
 interface Post {
-    url?: string | null;
-    url2?: string;
-    title?: string;
-    salary?: string | null;
-    tags?: string[];
-    company?: string;
-    location?: string;
-    exactLocation?: { text: string, url: string | null } | null;
+    url?: string | null,
+    url2?: string,
+    title?: string,
+    salary?: string | null,
+    tags?: string[],
+    company?: string,
+    location?: string,
+    exactLocation?: { text: string, url: string | null } | null,
 }
 
 async function getElement(driver: WebDriver, elementOrSelector: WebElement | string): Promise <WebElement> {
