@@ -8,6 +8,8 @@ A programming excercise and an experiment to determine which **JavaScript / Type
 
 ***
 
+### Installation:
+
 `clone https://github.com/zahradnik-ondrej/jobscz-scraper.git`
 
 `cd jobscz-scraper`
