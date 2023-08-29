@@ -66,7 +66,9 @@ const regions: string[] = [
     'ustecky-kraj',
     'vysocina-kraj',
     'zlinsky-kraj',
-]
+];
+
+const radiuses: number[] = [10, 20, 30, 40, 50,];
 
 const countries: string[] = [
     'slovensko',
@@ -75,7 +77,13 @@ const countries: string[] = [
     'rakousko',
     'velka-britanie-a-severni-irsko',
     'irsko',
-]
+];
+
+const dates: string[] = ['24h', '3d', '7d',];
+const education: string[] = ['primary', 'high', 'uni'];
+const arrangements: string[] = ['partial-work-from-home', 'work-mostly-from-home', 'flexible-hours',];
+const employers: string[] = ['direct', 'agency', 'ngo'];
+const suitableFor: string[] = ['graduates', 'retired', 'maternity', 'ukraine_refugees'];
 
 function parseArgs(): Parameters {
     const args: string[] = process.argv.slice(2);
@@ -93,12 +101,12 @@ function parseArgs(): Parameters {
                 }
                 break;
             case '--radius':
-                if ([10, 20, 30, 40, 50].includes(Number(value))) {
+                if (radiuses.includes(Number(value))) {
                     params.radius = Number(value) as Parameters['radius'];
                 }
                 break;
             case '--date':
-                if (['24h', '3d', '7d'].includes(value)) {
+                if (dates.includes(value)) {
                     params.date = value as Parameters['date'];
                 }
                 break;
@@ -109,7 +117,7 @@ function parseArgs(): Parameters {
                 params.employmentContract = value.split(',');
                 break;
             case '--education':
-                if (['primary', 'high', 'uni'].includes(value)) {
+                if (education.includes(value)) {
                     params.education = value as Parameters['education'];
                 }
                 break;
@@ -117,17 +125,17 @@ function parseArgs(): Parameters {
                 params.languageSkill = value.split(',');
                 break;
             case '--arrangement':
-                if (['partial-work-from-home', 'work-mostly-from-home', 'flexible-hours'].includes(value)) {
+                if (arrangements.includes(value)) {
                     params.arrangement = value as Parameters['arrangement'];
                 }
                 break;
             case '--employer':
-                if (['direct', 'agency', 'ngo'].includes(value)) {
+                if (employers.includes(value)) {
                     params.employer = value as Parameters['employer'];
                 }
                 break;
             case '--suitableFor':
-                if (['graduates', 'retired', 'maternity', 'ukraine_refugees'].includes(value)) {
+                if (suitableFor.includes(value)) {
                     params.suitableFor = value as Parameters['suitableFor'];
                 }
                 break;
