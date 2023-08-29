@@ -1,0 +1,19 @@
+{
+  "name": "jobscz-scraper",
+  "version": "3.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^21.1.0",
+    "puppethelper": "^1.13.2",
+    "typescript": "^5.2.2",
+    "ts-node": "^10.9.1",
+    "@types/puppeteer": "^7.0.4"
+  }
+}
