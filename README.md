@@ -24,8 +24,13 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 ### Observations:
 
-**Puppeteer** and **Selenium** are equally fast in this specific case. 
-
+**Puppeteer** and **Selenium** are equally fast in this specific case.  
 **Puppeteer** and **Selenium** are **~3.6944..** times faster than **Playwright** in this specific case.
+
+**Playwright** offers the most intuitive built-in functions for interacting with the web browser making it most suitable for beginners.  
+**Selenium** also offers many built-in functions but they are not as intuitive.  
+**Puppeteer** offers very little in this case and it's best to write wrapper functions which suit your specific needs but it offers the most modularity making this process easier compared to the others.
+
+Both **Playwright** and **Selenium** offer a support for multiple browsers *(unlike **Puppeteer** which has only experimental support for **Edge** and **Firefox**)*.
 
 </div>
