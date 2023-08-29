@@ -24,6 +24,6 @@ A programming excercise and an experiment to determine which **JavaScript / Type
 
 ### Observations:
 
-**Puppeteer** is **~3.6944..** times faster than **Playwright**.
+**Puppeteer** is **~3.6944..** times faster than **Playwright** in this specific case.
 
 </div>
