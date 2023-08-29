@@ -1,4 +1,11 @@
-/puppeteer/job_posts.json
-/playwright/job_posts.json
 /.idea/
 jobs-scraper.iml
+
+/puppeteer/job_posts.json
+/puppeteer/package-lock.json
+
+/playwright/job_posts.json
+/playwright/package-lock.json
+
+/selenium/job_posts.json
+/selenium/package-lock.json

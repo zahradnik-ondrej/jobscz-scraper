@@ -3,7 +3,7 @@ import * as ph from 'puppethelper';
 import chalk from 'chalk';
 import fs from 'fs';
 
-const DEBUG: boolean = false;
+const DEBUG: boolean = true;
 
 interface Post {
     url?: string | null;

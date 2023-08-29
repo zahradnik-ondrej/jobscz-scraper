@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "chromedriver": "^116.0.0",
+    "fs": "^0.0.1-security",
+    "selenium-webdriver": "^4.11.1"
+  },
+  "devDependencies": {
+    "@types/selenium-webdriver": "^4.1.16"
+  }
+}
