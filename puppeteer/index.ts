@@ -1,7 +1,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as ph from 'puppethelper';
 import chalk from 'chalk';
-import fs from 'fs';
+import fs, { WriteStream } from 'fs';
 
 const DEBUG: boolean = true;
 
@@ -13,25 +13,25 @@ interface Post {
     tags?: string[];
     company?: string;
     location?: string;
-    exact_location?: { text: string, url: string | null } | null;
+    exactLocation?: { text: string, url: string | null } | null;
 }
 
-async function getSalary(page: Page, post: Post, post_selector: string): Promise<void> {
+async function getSalary(page: Page, post: Post, postSelector: string): Promise<void> {
     post.salary = null
-    const salary_selector: string = post_selector + ' > div > span[class="Tag Tag--success Tag--small Tag--subtle"]';
+    const salarySelector: string = `${postSelector} > div > span[class="Tag Tag--success Tag--small Tag--subtle"]`;
     try {
-        post.salary = await ph.getText(page, salary_selector);
+        post.salary = await ph.getText(page, salarySelector);
     } catch(e) {
         // this stays empty
     }
 }
 
-async function getTags(page: Page, post: Post, post_selector: string): Promise<void> {
+async function getTags(page: Page, post: Post, postSelector: string): Promise<void> {
     post.tags = [];
     let tag: {no?: number, selector?: string, text?: string} = {};
     tag.no = 1;
     while (true) {
-        tag.selector = post_selector + ` > div > span[class="Tag Tag--neutral Tag--small Tag--subtle"]:nth-of-type(${tag.no})`;
+        tag.selector = `${postSelector} > div > span[class="Tag Tag--neutral Tag--small Tag--subtle"]:nth-of-type(${tag.no})`;
         try {
             tag.text = await ph.getText(page, tag.selector);
             post.tags.push(tag.text);
@@ -42,20 +42,20 @@ async function getTags(page: Page, post: Post, post_selector: string): Promise<v
     }
 }
 
-async function getExactLocation(page: Page, post: Post, title_selector: string, exact_location_selector: string): Promise<void> {
-    post.exact_location = null;
-    await ph.click(page, title_selector);
-    let page_url: string = page.url();
-    if (post.url !== page_url) {
-        post.url2 = page_url;
+async function getExactLocation(page: Page, post: Post, titleSelector: string, exactLocationSelector: string): Promise<void> {
+    post.exactLocation = null;
+    await ph.click(page, titleSelector);
+    let pageUrl: string = page.url();
+    if (post.url !== pageUrl) {
+        post.url2 = pageUrl;
     }
-    let page_hostname: string = new URL(page_url).hostname;
-    if (page_hostname === 'www.jobs.cz') {
+    let pageHostname: string = new URL(pageUrl).hostname;
+    if (pageHostname === 'www.jobs.cz') {
         try {
-            await ph.waitForSelector(page, exact_location_selector, 'css', 5);
-            post.exact_location = {
-                text: await ph.getText(page, exact_location_selector),
-                url: await ph.getAttribute(page, exact_location_selector, 'href'),
+            await ph.waitForSelector(page, exactLocationSelector, 'css', 5);
+            post.exactLocation = {
+                text: await ph.getText(page, exactLocationSelector),
+                url: await ph.getAttribute(page, exactLocationSelector, 'href'),
             };
         } catch(e) {
             // this stays empty
@@ -63,8 +63,8 @@ async function getExactLocation(page: Page, post: Post, title_selector: string, 
     }
     await page.goBack();
 
-    page_hostname = new URL(page.url()).hostname;
-    while(page_hostname !== 'www.jobs.cz') {
+    pageHostname = new URL(page.url()).hostname;
+    while(pageHostname !== 'www.jobs.cz') {
         await page.goBack();
     }
 }
@@ -98,20 +98,20 @@ function print(post: Post, url: boolean = false): void {
         console.log(post.company);
     }
 
-    if (post.exact_location && post.location) {
-        let exact_location_url: string | null;
-        if (post.exact_location.url) {
-            exact_location_url = chalk.gray(`(${post.exact_location.url})`);
+    if (post.exactLocation && post.location) {
+        let exactLocationUrl: string | null;
+        if (post.exactLocation.url) {
+            exactLocationUrl = chalk.gray(`(${post.exactLocation.url})`);
             if (!url) {
-                exact_location_url = '';
+                exactLocationUrl = '';
             }
         } else {
-            exact_location_url = '';
+            exactLocationUrl = '';
         }
-        if (post.exact_location.text.includes(post.location)) {
-            console.log(`${post.exact_location.text} ${exact_location_url}`);
-        } else if (post.location.includes(post.exact_location.text)) {
-            console.log(`${post.location} ${exact_location_url}`);
+        if (post.exactLocation.text.includes(post.location)) {
+            console.log(`${post.exactLocation.text} ${exactLocationUrl}`);
+        } else if (post.location.includes(post.exactLocation.text)) {
+            console.log(`${post.location} ${exactLocationUrl}`);
         } else {
             console.log(post.location);
         }
@@ -125,8 +125,8 @@ function print(post: Post, url: boolean = false): void {
     console.log();
 }
 
-function write(post: Post, first_post: boolean, writeStream: fs.WriteStream): boolean {
-    if (!first_post) {
+function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boolean {
+    if (!firstPost) {
         writeStream.write(',\n');
     }
 
@@ -134,11 +134,11 @@ function write(post: Post, first_post: boolean, writeStream: fs.WriteStream): bo
     return false;
 }
 
-const writeStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
-writeStream.write('[\n');
-let first_post: boolean = true;
-
 (async(): Promise<void> => {
+    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
+    writeStream.write('[\n');
+    let firstPost: boolean = true;
+
     let browser: Browser, page: Page;
 
     let opts = ph.BROWSER_OPTS;
@@ -149,23 +149,22 @@ let first_post: boolean = true;
     await ph.timeout(1);
 
     let post: Post = {};
-    const next_page_selector: string = 'html > body > div nav > ul > li:last-of-type > a[class="Button Button--secondary Button--square Pagination__button--next"]';
-    let post_selector: string;
-    let post_no: number = 1;
-    let page_no: number = 1;
-    const exact_location_selector: string = 'html > body > div > div > p > a';
+    const nextPageSelector: string = 'html > body > div nav > ul > li:last-of-type > a[class="Button Button--secondary Button--square Pagination__button--next"]';
+    let postNo: number = 1;
+    let pageNo: number = 1;
+    const exactLocationSelector: string = 'html > body > div > div > p > a';
 
     while (true) {
-        post_selector = `html > body > div article:nth-of-type(${post_no})`;
+        const postSelector: string = `html > body > div article:nth-of-type(${postNo})`;
         try {
-            await ph.waitForSelector(page, post_selector, 'css', 1);
+            await ph.waitForSelector(page, postSelector, 'css', 1);
         } catch(e) {
             try {
-                await ph.click(page, next_page_selector, 'css', 1);
-                post_no = 1;
-                page_no++;
+                await ph.click(page, nextPageSelector, 'css', 1);
+                postNo = 1;
+                pageNo++;
                 if (DEBUG) {
-                    console.log(chalk.bold(chalk.yellow(`- clicked next page (${page_no}) -`)));
+                    console.log(chalk.bold(chalk.yellow(`- clicked next page (${pageNo}) -`)));
                     console.log();
                 }
                 continue;
@@ -174,26 +173,26 @@ let first_post: boolean = true;
             }
         }
 
-        const title_selector: string = post_selector + ' > header > h2 > a';
-        const company_selector: string = post_selector + ' > footer > ul > li:nth-of-type(1) > span';
-        const location_selector: string = post_selector + ' > footer > ul > li:nth-of-type(2)';
+        const titleSelector: string = `${postSelector} > header > h2 > a`;
+        const companySelector: string = `${postSelector} > footer > ul > li:nth-of-type(1) > span`;
+        const locationSelector: string = `${postSelector} > footer > ul > li:nth-of-type(2)`;
 
-        post.title = await ph.getText(page, title_selector);
-        post.url = await ph.getAttribute(page, title_selector, 'href');
-        await getSalary(page, post, post_selector);
-        await getTags(page, post, post_selector);
-        post.company = await ph.getText(page, company_selector);
-        post.location = await ph.getText(page, location_selector);
-        //await getExactLocation(page, post, title_selector, exact_location_selector);
+        post.title = await ph.getText(page, titleSelector);
+        post.url = await ph.getAttribute(page, titleSelector, 'href');
+        await getSalary(page, post, postSelector);
+        await getTags(page, post, postSelector);
+        post.company = await ph.getText(page, companySelector);
+        post.location = await ph.getText(page, locationSelector);
+        //await getExactLocation(page, post, titleSelector, exactLocationSelector);
 
-        first_post = write(post, first_post, writeStream);
+        firstPost = write(post, firstPost, writeStream);
         if (DEBUG) {
             print(post, true);
         } else {
             print(post);
         }
 
-        post_no++;
+        postNo++;
     }
 
     writeStream.write(']\n');

@@ -1,5 +1,4 @@
-import {Builder, By, ThenableWebDriver, WebElement} from 'selenium-webdriver';
-import {DriverService} from "selenium-webdriver/remote";
+import {WebDriver, Builder, By, ThenableWebDriver, WebElement} from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import chalk from 'chalk';
 import fs, {WriteStream} from 'fs';
@@ -14,50 +13,54 @@ interface Post {
     tags?: string[];
     company?: string;
     location?: string;
-    exact_location?: { text: string, url: string | null } | null;
+    exactLocation?: { text: string, url: string | null } | null;
 }
 
-async function getText(element: WebElement, timeout: number = 200): Promise<string | undefined> {
-    try {
-        const text: string = await element.getDriver().wait(async(): Promise<string> => await element.getText(), timeout);
-        if (text) {
-            return text.trim();
-        }
-    } catch (e) {
-        // Handle timeout or other exceptions
+async function getElement(driver: WebDriver, elementOrSelector: WebElement | string): Promise <WebElement> {
+    if (elementOrSelector instanceof WebElement) {
+        return elementOrSelector;
+    }
+    return (await driver.findElement(By.css(elementOrSelector)));
+}
+
+
+async function getText(driver: WebDriver, elementOrSelector: WebElement | string, timeout: number = 200): Promise <string | undefined> {
+    const element: WebElement = await getElement(driver, elementOrSelector);
+    const text: string = await driver.wait(async (): Promise<string> => await element.getText(), timeout);
+    if (text) {
+        return text.trim();
     }
 }
 
-
-async function getSalary(element: WebElement, post: Post): Promise<void> {
+async function getSalary(driver: WebDriver, post: Post, postSelector: string): Promise<void> {
     post.salary = null;
+    const salarySelector: string = `${postSelector} > div > span[class="Tag Tag--success Tag--small Tag--subtle"]`;
     try {
-        const salaryElement: WebElement = await element.findElement(By.css('div > span.Tag.Tag--success.Tag--small.Tag--subtle'));
-        post.salary = await getText(salaryElement);
+        post.salary = await getText(driver, salarySelector);
     } catch (e) {
         // this stays empty
     }
 }
 
-async function getTags(element: WebElement, post: Post): Promise<void> {
+async function getTags(driver: WebDriver, post: Post, postSelector: string): Promise<void> {
     post.tags = [];
-    let tagNo: number = 1;
+    let tag: {no?: number, selector?: string, text?: string} = {};
+    tag.no = 1;
     while (true) {
-        const tagSelector: string = `div > span.Tag.Tag--neutral.Tag--small.Tag--subtle:nth-of-type(${tagNo})`;
+        tag.selector = `${postSelector} > div > span[class="Tag Tag--neutral Tag--small Tag--subtle"]:nth-of-type(${tag.no})`;
         try {
-            const tagElement: WebElement = await element.findElement(By.css(tagSelector));
-            const tagText: string | undefined = await getText(tagElement);
-            if (tagText) {
-                post.tags.push(tagText);
+            tag.text = await getText(driver, tag.selector);
+            if (tag.text) {
+                post.tags.push(tag.text);
+                tag.no++;
             }
-            tagNo++;
-        } catch (e) {
+        } catch(e) {
             break;
         }
     }
 }
 
-async function print(post: Post, url: boolean = false): Promise<void> {
+function print(post: Post, url: boolean = false): void {
     if (post.title) {
         console.log(chalk.bold(post.title));
     }
@@ -94,8 +97,8 @@ async function print(post: Post, url: boolean = false): Promise<void> {
     console.log();
 }
 
-async function write(post: Post, first_post: boolean, writeStream: fs.WriteStream): Promise<boolean> {
-    if (!first_post) {
+function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boolean {
+    if (!firstPost) {
         writeStream.write(',\n');
     }
 
@@ -104,6 +107,10 @@ async function write(post: Post, first_post: boolean, writeStream: fs.WriteStrea
 }
 
 (async(): Promise<void> => {
+    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
+    writeStream.write('[\n');
+    let firstPost: boolean = true;
+
     const options = new chrome.Options();
     options.headless();
 
@@ -112,14 +119,13 @@ async function write(post: Post, first_post: boolean, writeStream: fs.WriteStrea
         .setChromeOptions(options)
         .build();
 
+    console.log();
 
     await driver.get('https://www.jobs.cz/prace/');
     await driver.sleep(1000);
 
-    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
-    writeStream.write('[\n');
-    let first_post: boolean = true;
-
+    const post: Post = {};
+    const nextPageSelector: string = 'html > body > div nav > ul > li:last-of-type > a.Button.Button--secondary.Button--square.Pagination__button--next';
     let postNo: number = 1;
     let pageNo: number = 1;
 
@@ -129,7 +135,6 @@ async function write(post: Post, first_post: boolean, writeStream: fs.WriteStrea
             await driver.wait(async(): Promise<WebElement> => await driver.findElement(By.css(postSelector)), 1000);
         } catch (e) {
             try {
-                const nextPageSelector: string = 'html > body > div nav > ul > li:last-of-type > a.Button.Button--secondary.Button--square.Pagination__button--next';
                 await driver.findElement(By.css(nextPageSelector)).click();
                 postNo = 1;
                 pageNo++;
@@ -142,27 +147,23 @@ async function write(post: Post, first_post: boolean, writeStream: fs.WriteStrea
                 break;
             }
         }
+        const titleSelector: string = `${postSelector} > header > h2 > a`;
+        const companySelector: string = `${postSelector} > footer > ul > li:nth-of-type(1) > span`;
+        const locationSelector: string = `${postSelector} > footer > ul > li:nth-of-type(2)`;
 
-        const titleSelector: string = postSelector + ' header h2 a';
-        const postElement: WebElement = await driver.findElement(By.css(postSelector));
+        post.title = await getText(driver, titleSelector);
+        post.url = await driver.findElement(By.css(titleSelector)).getAttribute('href');
+        await getSalary(driver, post, postSelector);
+        await getTags(driver, post, postSelector);
+        post.company = await getText(driver, companySelector);
+        post.location = await getText(driver, locationSelector);
 
-        const post: Post = {};
-        post.title = await getText(postElement.findElement(By.css('header h2 a')));
+        firstPost = write(post, firstPost, writeStream);
 
-        if (post.title) {
-            post.url = await postElement.findElement(By.css('header h2 a')).getAttribute('href');
-            await getSalary(postElement, post);
-            await getTags(postElement, post);
-
-            post.company = await getText(postElement.findElement(By.css('footer > ul > li:nth-of-type(1) > span')));
-            post.location = await getText(postElement.findElement(By.css('footer > ul > li:nth-of-type(2)')));
-
-            first_post = await write(post, first_post, writeStream);
-            if (DEBUG) {
-                await print(post, true);
-            } else {
-                await print(post);
-            }
+        if (DEBUG) {
+            print(post, true);
+        } else {
+            print(post);
         }
 
         postNo++;

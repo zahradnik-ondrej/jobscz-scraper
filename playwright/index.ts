@@ -20,31 +20,32 @@ interface Post {
     tags?: string[];
     company?: string;
     location?: string;
-    exact_location?: { text: string, url: string | null } | null;
+    exactLocation?: { text: string, url: string | null } | null;
 }
 
-async function getSalary(page: Page, post: Post, post_selector: string): Promise<void> {
+async function getSalary(page: Page, post: Post, postSelector: string): Promise<void> {
     post.salary = null;
-    const salary_selector: string = `${post_selector} > div > span[class="Tag Tag--success Tag--small Tag--subtle"]`;
+    const salarySelector: string = `${postSelector} > div > span[class="Tag Tag--success Tag--small Tag--subtle"]`;
     try {
-        post.salary = await getText(page, salary_selector);
-    } catch(e) {
+        post.salary = await getText(page, salarySelector);
+    } catch (e) {
         // this stays empty
     }
 }
 
-async function getTags(page: Page, post: Post, post_selector: string): Promise<void> {
+async function getTags(page: Page, post: Post, postSelector: string): Promise<void> {
     post.tags = [];
-    let tagNo: number = 1;
+    let tag: {no?: number, selector?: string, text?: string | undefined} = {};
+    tag.no = 1;
     while (true) {
-        const tagSelector: string = `${post_selector} > div > span[class="Tag Tag--neutral Tag--small Tag--subtle"]:nth-of-type(${tagNo})`;
+        tag.selector = `${postSelector} > div > span[class="Tag Tag--neutral Tag--small Tag--subtle"]:nth-of-type(${tag.no})`;
         try {
-            const tagText: string | undefined = await getText(page, tagSelector);
-            if (tagText) {
-                post.tags.push(tagText);
+            tag.text = await getText(page, tag.selector);
+            if (tag.text) {
+                post.tags.push(tag.text);
+                tag.no++;
             }
-            tagNo++;
-        } catch(e) {
+        } catch (e) {
             break;
         }
     }
@@ -87,8 +88,8 @@ function print(post: Post, url: boolean = false): void {
     console.log();
 }
 
-function write(post: Post, first_post: boolean, writeStream: fs.WriteStream): boolean {
-    if (!first_post) {
+function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boolean {
+    if (!firstPost) {
         writeStream.write(',\n');
     }
 
@@ -96,11 +97,11 @@ function write(post: Post, first_post: boolean, writeStream: fs.WriteStream): bo
     return false;
 }
 
-const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
-writeStream.write('[\n');
-let first_post: boolean = true;
-
 (async(): Promise<void> => {
+    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
+    writeStream.write('[\n');
+    let firstPost: boolean = true;
+
     let browser: Browser, page: Page;
     browser = await chromium.launch();
     page = await browser.newPage();
@@ -108,22 +109,21 @@ let first_post: boolean = true;
     await page.waitForTimeout(1000);
 
     let post: Post = {};
-    const next_page_selector: string = 'html > body > div nav > ul > li:last-of-type > a[class="Button Button--secondary Button--square Pagination__button--next"]';
-    let post_selector: string;
-    let post_no: number = 1;
-    let page_no: number = 1;
+    const nextPageSelector: string = 'html > body > div nav > ul > li:last-of-type > a[class="Button Button--secondary Button--square Pagination__button--next"]';
+    let postNo: number = 1;
+    let pageNo: number = 1;
 
     while (true) {
-        post_selector = `html > body > div article:nth-of-type(${post_no})`;
+        const postSelector: string = `html > body > div article:nth-of-type(${postNo})`;
         try {
-            await page.waitForSelector(post_selector, { timeout: 1000 });
+            await page.waitForSelector(postSelector, { timeout: 1000 });
         } catch(e) {
             try {
-                await page.click(next_page_selector, { timeout: 2000 });
-                post_no = 1;
-                page_no++;
+                await page.click(nextPageSelector, { timeout: 2000 });
+                postNo = 1;
+                pageNo++;
                 if (DEBUG) {
-                    console.log(chalk.bold(chalk.yellow(`- clicked next page (${page_no}) -`)));
+                    console.log(chalk.bold(chalk.yellow(`- clicked next page (${pageNo}) -`)));
                     console.log();
                 }
                 continue;
@@ -132,30 +132,31 @@ let first_post: boolean = true;
             }
         }
 
-        const title_selector: string = post_selector + ' > header > h2 > a';
-        const company_selector: string = post_selector + ' > footer > ul > li:nth-of-type(1) > span';
-        const location_selector: string = post_selector + ' > footer > ul > li:nth-of-type(2)';
+        const titleSelector: string = `${postSelector} > header > h2 > a`;
+        const companySelector: string = `${postSelector} > footer > ul > li:nth-of-type(1) > span`;
+        const locationSelector: string = `${postSelector} > footer > ul > li:nth-of-type(2)`;
 
-        const title: string | undefined = await getText(page, title_selector);
+        const title: string | undefined = await getText(page, titleSelector);
         post.title = title ?? undefined;
-        post.url = await page.getAttribute(title_selector, 'href');
-        await getSalary(page, post, post_selector);
-        await getTags(page, post, post_selector);
 
-        const company: string | undefined = await getText(page, company_selector);
+        post.url = await page.getAttribute(titleSelector, 'href');
+        await getSalary(page, post, postSelector);
+        await getTags(page, post, postSelector);
+
+        const company: string | undefined = await getText(page, companySelector);
         post.company = company ?? undefined;
 
-        const location: string | undefined = await getText(page, location_selector);
+        const location: string | undefined = await getText(page, locationSelector);
         post.location = location ?? undefined;
 
-        first_post = write(post, first_post, writeStream);
+        firstPost = write(post, firstPost, writeStream);
         if (DEBUG) {
             print(post, true);
         } else {
             print(post);
         }
 
-        post_no++;
+        postNo++;
     }
 
     writeStream.write(']\n');
