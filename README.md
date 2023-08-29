@@ -33,6 +33,6 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 Both **Playwright** and **Selenium** offer a support for multiple browsers *(unlike **Puppeteer** which has only experimental support for **Edge** and **Firefox**)*.
 
-[^1]: You can check out my [🧰 puppethelper](https://github.com/zahradnik-ondrej/puppethelper) package for automated QA web testing which has many useful functions for interacting with the web browser out-of-the-box plus a little extra.
+[^1]: You can check out my [🧰 puppethelper](https://github.com/zahradnik-ondrej/puppethelper) package for **Puppeteer** designed for automated QA web testing which has many useful functions for interacting with the web browser out-of-the-box plus a little extra.
 
 </div>
