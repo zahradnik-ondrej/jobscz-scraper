@@ -2,7 +2,7 @@ import {Browser, Page, chromium} from 'playwright';
 import chalk from 'chalk';
 import fs, { WriteStream } from 'fs';
 
-const DEBUG: boolean = false;
+const DEBUG: boolean = true;
 
 async function getText(page: Page, selector: string, timeout: number = 0.2): Promise <string | undefined> {
     timeout *= 1000;

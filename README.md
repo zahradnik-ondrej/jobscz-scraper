@@ -2,7 +2,7 @@
 
 # 💼 Jobs.cz Scraper
 
-### A simple data scraper of Jobs.cz written with Puppeteer and Playwright.
+### A simple data scraper of Jobs.cz written with Puppeteer, Playwright and Selenium.
 
 A programming exercise and an experiment to determine which **JavaScript / TypeScript** library is the best option for web scraping.
 
