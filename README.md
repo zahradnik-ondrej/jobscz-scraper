@@ -2,7 +2,7 @@
 
 # 💼 [Jobs.cz](https://www.jobs.cz/prace/) Scraper
 
-### A simple data scraper of Jobs.cz written in multiple JS/TS libraries.
+### A simple data scraper of [Jobs.cz](https://www.jobs.cz/prace/) written in multiple JS/TS libraries.
 
 A programming exercise and an experiment to determine which **JavaScript / TypeScript** library is the best option for web scraping.
 
