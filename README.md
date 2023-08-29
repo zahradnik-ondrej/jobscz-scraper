@@ -16,9 +16,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 `cd puppeteer` or `cd playwright` or `cd selenium`
 
-`npm install`
-
-`npm start`
+`npm install` and `npm start` in case of **Puppeteer** or **Playwright** or `ts-node index.ts` in case of **Selenium**
 
 ***
 
