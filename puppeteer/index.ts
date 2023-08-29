@@ -51,6 +51,92 @@ interface Post {
     exactLocation?: { text: string, url: string | null } | null,
 }
 
+function parseArgs(): Parameters {
+    const args: string[] = process.argv.slice(2);
+    const params: Parameters = {};
+
+    for (let i: number = 0; i < args.length; i++) {
+        const value: string = args[++i];
+        switch (args[i - 1]) {
+            case '--tags':
+                params.tags = value.split(',');
+                break;
+            case '--locality':
+                if ([
+                    'praha',
+                    'jihocesky-kraj',
+                    'jihomoravsky-kraj',
+                    'karlovarsky-kraj',
+                    'kralovohradecky-kraj',
+                    'liberecky-kraj',
+                    'moravskoslezsky-kraj',
+                    'olomoucky-kraj',
+                    'pardubicky-kraj',
+                    'plzensky-kraj',
+                    'stredocesky-kraj',
+                    'ustecky-kraj',
+                    'vysocina-kraj',
+                    'zlinsky-kraj',
+                    'slovensko',
+                    'nemecko',
+                    'polsko',
+                    'rakousko',
+                    'velka-britanie-a-severni-irsko',
+                    'irsko'
+                ].includes(value)) {
+                    params.locality = value as Parameters['locality'];
+                }
+                break;
+            case '--radius':
+                if ([10, 20, 30, 40, 50].includes(Number(value))) {
+                    params.radius = Number(value) as Parameters['radius'];
+                }
+                break;
+            case '--date':
+                if (['24h', '3d', '7d'].includes(value)) {
+                    params.date = value as Parameters['date'];
+                }
+                break;
+            case '--salary':
+                params.salary = Number(value);
+                break;
+            case '--employmentContract':
+                params.employmentContract = value.split(',');
+                break;
+            case '--education':
+                if (['primary', 'high', 'uni'].includes(value)) {
+                    params.education = value as Parameters['education'];
+                }
+                break;
+            case '--languageSkill':
+                params.languageSkill = value.split(',');
+                break;
+            case '--arrangement':
+                if (['partial-work-from-home', 'work-mostly-from-home', 'flexible-hours'].includes(value)) {
+                    params.arrangement = value as Parameters['arrangement'];
+                }
+                break;
+            case '--employer':
+                if (['direct', 'agency', 'ngo'].includes(value)) {
+                    params.employer = value as Parameters['employer'];
+                }
+                break;
+            case '--suitableFor':
+                if (['graduates', 'retired', 'maternity', 'ukraine_refugees'].includes(value)) {
+                    params.suitableFor = value as Parameters['suitableFor'];
+                }
+                break;
+            case '--disabled':
+                params.disabled = value === 'true';
+                break;
+            default:
+                console.log(`Unknown argument: ${args[i - 1]}`);
+                break;
+        }
+    }
+    return params;
+}
+
 function constructURL(parameters: Parameters): string {
     let url: string = 'https://www.jobs.cz/prace/';
 
@@ -257,13 +343,17 @@ function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boo
 }
 
 (async(): Promise<void> => {
-    const parameters: Parameters = {
+    /*
+    const params: Parameters = {
         tags: ['python', 'javascript'],
         salary: 50000,
         education: 'high',
         arrangement: 'work-mostly-from-home',
         employer: 'direct',
     }
+    */
+
+    const params: Parameters = parseArgs();
 
     const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
     writeStream.write('[\n');
@@ -275,7 +365,7 @@ function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boo
     browser = await puppeteer.launch(opts);
     page = await browser.newPage();
     page.setDefaultTimeout(ph.PAGE_OPTS.DEFAULT_TIMEOUT);
-    const url: string = constructURL(parameters);
+    const url: string = constructURL(params);
     await page.goto(url);
     await ph.timeout(1);
 
