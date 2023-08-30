@@ -1,0 +1,42 @@
+import chalk from "chalk";
+import {DEBUG} from '../constants/DEBUG';
+import {Post} from '../interfaces/Post';
+
+function print(post: Post, url: boolean = false): void {
+    if (post.title) {
+        console.log(chalk.bold(post.title));
+    }
+
+    if (url) {
+        if (post.url) {
+            console.log(chalk.gray(`(${post.url})`))
+        }
+        if (post.url2) {
+            console.log(chalk.gray(`(${post.url2})`))
+        }
+    }
+
+    if (post.salary) {
+        console.log(post.salary);
+    } else if (DEBUG) {
+        console.log(chalk.red('salary not found'));
+    }
+
+    if (post.tags && post.tags.length) {
+        console.log(post.tags);
+    } else if (DEBUG) {
+        console.log(chalk.red('tags not found'));
+    }
+
+    if (post.company) {
+        console.log(post.company);
+    }
+
+    if (post.location) {
+        console.log(post.location);
+    }
+
+    console.log();
+}
+
+export {print}

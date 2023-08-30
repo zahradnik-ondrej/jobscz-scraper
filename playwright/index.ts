@@ -1,27 +1,11 @@
 import {Browser, Page, chromium} from 'playwright';
 import chalk from 'chalk';
 import fs, { WriteStream } from 'fs';
-
-const DEBUG: boolean = true;
-
-async function getText(page: Page, selector: string, timeout: number = 0.2): Promise <string | undefined> {
-    timeout *= 1000;
-    let text: string | null = await page.textContent(selector, { timeout: timeout });
-    if (text) {
-        return text.trim();
-    }
-}
-
-interface Post {
-    url?: string | null,
-    url2?: string,
-    title?: string,
-    salary?: string | null,
-    tags?: string[],
-    company?: string,
-    location?: string,
-    exactLocation?: { text: string, url: string | null } | null,
-}
+import {DEBUG} from './src/constants/DEBUG';
+import {getText} from './src/functions/getText';
+import {print} from './src/functions/print';
+import {write} from './src/functions/write';
+import {Post} from './src/interfaces/Post';
 
 async function getSalary(page: Page, post: Post, postSelector: string): Promise<void> {
     post.salary = null;
@@ -49,52 +33,6 @@ async function getTags(page: Page, post: Post, postSelector: string): Promise<vo
             break;
         }
     }
-}
-
-function print(post: Post, url: boolean = false): void {
-    if (post.title) {
-        console.log(chalk.bold(post.title));
-    }
-
-    if (url) {
-        if (post.url) {
-            console.log(chalk.gray(`(${post.url})`))
-        }
-        if (post.url2) {
-            console.log(chalk.gray(`(${post.url2})`))
-        }
-    }
-
-    if (post.salary) {
-        console.log(post.salary);
-    } else if (DEBUG) {
-        console.log(chalk.red('salary not found'));
-    }
-
-    if (post.tags && post.tags.length) {
-        console.log(post.tags);
-    } else if (DEBUG) {
-        console.log(chalk.red('tags not found'));
-    }
-
-    if (post.company) {
-        console.log(post.company);
-    }
-
-    if (post.location) {
-        console.log(post.location);
-    }
-
-    console.log();
-}
-
-function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boolean {
-    if (!firstPost) {
-        writeStream.write(',\n');
-    }
-
-    writeStream.write('  ' + JSON.stringify(post, null, 2));
-    return false;
 }
 
 (async(): Promise<void> => {

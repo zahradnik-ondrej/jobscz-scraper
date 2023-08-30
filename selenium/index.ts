@@ -2,35 +2,11 @@ import {WebDriver, Builder, By, ThenableWebDriver, WebElement} from 'selenium-we
 import chrome from 'selenium-webdriver/chrome';
 import chalk from 'chalk';
 import fs, {WriteStream} from 'fs';
-
-const DEBUG: boolean = true;
-
-interface Post {
-    url?: string | null,
-    url2?: string,
-    title?: string,
-    salary?: string | null,
-    tags?: string[],
-    company?: string,
-    location?: string,
-    exactLocation?: { text: string, url: string | null } | null,
-}
-
-async function getElement(driver: WebDriver, elementOrSelector: WebElement | string): Promise <WebElement> {
-    if (elementOrSelector instanceof WebElement) {
-        return elementOrSelector;
-    }
-    return (await driver.findElement(By.css(elementOrSelector)));
-}
-
-
-async function getText(driver: WebDriver, elementOrSelector: WebElement | string, timeout: number = 200): Promise <string | undefined> {
-    const element: WebElement = await getElement(driver, elementOrSelector);
-    const text: string = await driver.wait(async (): Promise<string> => await element.getText(), timeout);
-    if (text) {
-        return text.trim();
-    }
-}
+import {DEBUG} from './src/constants/DEBUG';
+import {getText} from './src/functions/getText';
+import {print} from './src/functions/print';
+import {write} from './src/functions/write';
+import {Post} from './src/interfaces/Post';
 
 async function getSalary(driver: WebDriver, post: Post, postSelector: string): Promise<void> {
     post.salary = null;
@@ -58,52 +34,6 @@ async function getTags(driver: WebDriver, post: Post, postSelector: string): Pro
             break;
         }
     }
-}
-
-function print(post: Post, url: boolean = false): void {
-    if (post.title) {
-        console.log(chalk.bold(post.title));
-    }
-
-    if (url) {
-        if (post.url) {
-            console.log(chalk.gray(`(${post.url})`))
-        }
-        if (post.url2) {
-            console.log(chalk.gray(`(${post.url2})`))
-        }
-    }
-
-    if (post.salary) {
-        console.log(post.salary);
-    } else if (DEBUG) {
-        console.log(chalk.red('salary not found'));
-    }
-
-    if (post.tags && post.tags.length) {
-        console.log(post.tags);
-    } else if (DEBUG) {
-        console.log(chalk.red('tags not found'));
-    }
-
-    if (post.company) {
-        console.log(post.company);
-    }
-
-    if (post.location) {
-        console.log(post.location);
-    }
-
-    console.log();
-}
-
-function write(post: Post, firstPost: boolean, writeStream: fs.WriteStream): boolean {
-    if (!firstPost) {
-        writeStream.write(',\n');
-    }
-
-    writeStream.write('  ' + JSON.stringify(post, null, 2));
-    return false;
 }
 
 (async(): Promise<void> => {
