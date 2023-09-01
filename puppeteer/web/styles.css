@@ -1,0 +1,48 @@
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+body {
+    display: flex;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    max-width: 50%;
+    margin: 0 auto;
+}
+
+.formSection {
+    display: inline-block;
+    margin-bottom: 20px;
+    vertical-align: top;
+}
+
+label, input, select, button {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.dropdownMenu {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.dropdownMenu label {
+    display: flex;
+    padding: 0 16px;
+}
+
+.dropdownMenu input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.languageSkillOption {
+    display: flex;
+}
+
+.languageSkillOptionDescription {
+    font-size: 0.8em;
+    color: #777;
+    cursor: pointer;
+    margin-left: 25px;
+}

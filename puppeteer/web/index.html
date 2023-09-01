@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="cs">
+    <head>
+        <meta charset="UTF-8">
+        <title>Jobs.cz Scraper</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <div>
+            <h1>Jobs.cz Scraper</h1>
+            <form id="form">
+                <div class="formSection">
+                    <label for="tags">Tagy (oddělené čárkou)</label>
+                    <input type="text" id="tags" name="tags">
+                </div>
+
+                <div class="formSection">
+                    <label for="locality">Kde?</label>
+                    <select id="locality" name="locality">
+                        <option value="">Nezáleží</option>
+                        <option value="praha">Praha</option>
+                        <option value="jihocesky-kraj">Jihočeský kraj</option>
+                        <option value="jihomoravsky-kraj">Jihomoravský kraj</option>
+                        <option value="karlovarsky-kraj">Karlovarský kraj</option>
+                        <option value="kralovohradecky-kraj">Královéhradecký kraj</option>
+                        <option value="liberecky-kraj">Liberecký kraj</option>
+                        <option value="moravskoslezsky-kraj">Moravskoslezský kraj</option>
+                        <option value="olomoucky-kraj">Olomoucký kraj</option>
+                        <option value="pardubicky-kraj">Pardubický kraj</option>
+                        <option value="plzensky-kraj">Plzeňský kraj</option>
+                        <option value="stredocesky-kraj">Středočeský kraj</option>
+                        <option value="ustecky-kraj">Ústecký kraj</option>
+                        <option value="vysocina-kraj">Vysočina kraj</option>
+                        <option value="zlinsky-kraj">Zlínský kraj</option>
+                        <option value="slovensko">Slovensko</option>
+                        <option value="nemecko">Německo</option>
+                        <option value="polsko">Polsko</option>
+                        <option value="rakousko">Rakousko</option>
+                        <option value="velka-britanie-a-severni-irsko">Velká Británie a Severní Irsko</option>
+                        <option value="irsko">Irsko</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <div id="radiusDiv" style="display:none">
+                        <label for="radius">Okolí</label>
+                        <select id="radius" name="radius">
+                            <option value="">+ 0 km</option>
+                            <option value="10">+ 10 km</option>
+                            <option value="20">+ 20 km</option>
+                            <option value="30">+ 30 km</option>
+                            <option value="40">+ 40 km</option>
+                            <option value="50">+ 50 km</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="formSection">
+                    <label for="date">Čas zveřejnění</label>
+                    <select id="date" name="date">
+                        <option value="">Nezáleží</option>
+                        <option value="24h">Posledních 24 hod.</option>
+                        <option value="3d">Poslední 3 dny</option>
+                        <option value="7d">Poslední týden</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <label for="salary">Plat</label>
+                    <input type="number" id="salary" name="salary" min="0" max="200000">
+                </div>
+
+                <div class="formSection">
+                    <label for="employmentContract">Typ úvazku</label>
+                    <div class="dropdown">
+                        <button type="button" id="employmentContractButton">Typ úvazku</button>
+                        <div id="employmentContract" class="dropdownMenu">
+
+                            <label>Úvazek</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="plny-uvazek">Plný úvazek</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="zkraceny-uvazek">Zkrácený úvazek</label>
+
+                            <label>Typ spolupráce</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="employment-contract">Pracovní smlouva (HPP/VPP)</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="identification-number">Práce na živnostenský list</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="agreement">Práce na dohodu</label>
+
+                            <label>Stáže</label>
+                            <label><input type="checkbox" class="employmentContractOption" value="internships">Stáže, praxe a trainee programy</label>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formSection">
+                    <label for="education">Vzdělání</label>
+                    <select id="education" name="education">
+                        <option value="">Nezáleží</option>
+                        <option value="primary">Bez maturity</option>
+                        <option value="high">S maturitou</option>
+                        <option value="uni">VŠ</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <label for="languageSkill">Jazyky</label>
+                    <div class="dropdown">
+                        <button type="button" id="languageSkillButton">Požadované jazyky</button>
+                        <div id="languageSkill" class="dropdownMenu">
+
+                            <div class="languageSkillOption">
+                                <input type="checkbox" class="languageSkillOption" id="cs" value="cs">
+                                <label for="cs">Jen čeština</label>
+                            </div>
+                            <label class="languageSkillOptionDescription" for="cs">Vybrat nabídky bez upřesnění jazyka</label>
+
+                            <label><input type="checkbox" class="languageSkillOption" value="en">Angličtina</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="de">Němčina</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="fr">Francouzština</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="ru">Ruština</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="pl">Polština</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="it">Italština</label>
+                            <label><input type="checkbox" class="languageSkillOption" value="es">Španělština</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formSection">
+                    <label for="arrangement">Home office</label>
+                    <select id="arrangement" name="arrangement">
+                        <option value="">Nezáleží</option>
+                        <option value="partial-work-from-home">Možnost práce z domova</option>
+                        <option value="work-mostly-from-home">Práce převážně z domova</option>
+                        <option value="flexible-hours">Flexibilní pracovní doba</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <label for="employer">Zadavatel</label>
+                    <select id="employer" name="employer">
+                        <option value="">Nezáleží</option>
+                        <option value="direct">Přímý zaměstnavatel</option>
+                        <option value="agency">Agentura</option>
+                        <option value="ngo">Neziskovka</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <label for="suitableFor">Vhodné i pro</label>
+                    <select id="suitableFor" name="suitableFor">
+                        <option value="">Nezáleží</option>
+                        <option value="graduates">Absolventi</option>
+                        <option value="retired">Důchodci</option>
+                        <option value="maternity">Na rodičovské</option>
+                        <option value="ukraine_refugees">Uprchlíky z Ukrajiny</option>
+                    </select>
+                </div>
+
+                <div class="formSection">
+                    <div id="disabledDiv">
+                        <label for="disabled">OZP</label>
+                        <input type="checkbox" id="disabled" name="disabled">
+                    </div>
+                </div>
+
+                <div class="formSection">
+                    <button type="submit">Hledat</button>
+                </div>
+            </form>
+
+            <script src="script.js"></script>
+        </div>
+    </body>
+</html>
