@@ -37,7 +37,7 @@ async function getTags(driver: WebDriver, post: Post, postSelector: string): Pro
 }
 
 (async(): Promise<void> => {
-    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
+    const writeStream: WriteStream = fs.createWriteStream('job-posts.json', { flags: 'w' });
     writeStream.write('[\n');
     let firstPost: boolean = true;
 

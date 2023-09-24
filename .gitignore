@@ -1,8 +1,10 @@
 /.idea/
 jobs-scraper.iml
 
-/puppeteer/job_posts.json
-/puppeteer/package-lock.json
+/puppeteer/scraper/job_posts.json
+/puppeteer/scraper/package-lock.json
+/puppeteer/web/package-lock.json
+/puppeteer/web/job-params.json
 
 /playwright/job_posts.json
 /playwright/package-lock.json

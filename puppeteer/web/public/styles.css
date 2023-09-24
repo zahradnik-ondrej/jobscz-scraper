@@ -1,0 +1,49 @@
+body {
+    color: #fff1e8;
+    background-color: #1d2b53;
+    text-align: center;
+    max-width: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
+.orange {
+    color: #1d2b53;
+    background-color: #ffa300;
+}
+
+.gray {
+    color: #5f574f;
+    font-size: 12px;
+}
+
+.formSection {
+    display: inline-block;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#radiusDiv {
+    display: none;
+}
+
+.dropdownCheckboxes {
+    display: none;
+    color: #000000;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.5);
+    padding: 8px;
+    text-align: left;
+    width: 200px;
+}
+
+.languageSkillOption {
+    display: flex;
+}

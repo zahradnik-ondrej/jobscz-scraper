@@ -2,6 +2,11 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 import * as ph from 'puppethelper';
 import chalk from 'chalk';
 import fs, { WriteStream } from 'fs';
+import { MongoClient, ObjectId, Db} from 'mongodb';
+
+const dbUrl: string = 'mongodb://localhost:27017';
+const dbName: string = 'jobPostings';
+
 import {Parameters} from './src/interfaces/Parameters';
 import {Post} from './src/interfaces/Post';
 import {parseArgs} from './src/functions/parseArgs';
@@ -12,16 +17,40 @@ import {write} from './src/functions/write';
 import {print} from './src/functions/print';
 import {DEBUG} from './src/constants/DEBUG';
 
+/*
+function writeMongo(db: Db, post: Post): void {
+    post._id = new ObjectId();
+    db.collection('postings').insertOne(post);
+}
+*/
+
+async function writeMongo(db: Db, post: Post): Promise<void> {
+    const collection = db.collection('postings');
+    const query = { url: post.url };
+    const existingPost = await collection.findOne(query);
+
+    if (!existingPost) {
+        post._id = new ObjectId();
+        await collection.insertOne(post);
+    } else {
+        console.log('Post already exists:', post);
+    }
+}
+
 (async(): Promise<void> => {
-    const params: Parameters = {
-        tags: ['python', 'javascript'],
-        salary: 50000,
-        education: 'high',
-        arrangement: 'work-mostly-from-home',
-        employer: 'direct',
+    let params: Parameters;
+
+    if (process.argv.length === 2) {
+        import('../web/job-params.json').then(parametersData => {
+            params = parametersData.default as unknown as Parameters;
+        });
+    } else {
+        params = parseArgs();
     }
 
-    //const params: Parameters = parseArgs();
+    const client: MongoClient = new MongoClient(dbUrl);
+    await client.connect();
+    let db: Db = client.db(dbName);
 
     const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
     writeStream.write('[\n');
@@ -33,6 +62,7 @@ import {DEBUG} from './src/constants/DEBUG';
     browser = await puppeteer.launch(opts);
     page = await browser.newPage();
     page.setDefaultTimeout(ph.PAGE_OPTS.DEFAULT_TIMEOUT);
+    // @ts-ignore
     const url: string = constructUrl(params);
     await page.goto(url);
     await ph.timeout(1);
@@ -75,6 +105,7 @@ import {DEBUG} from './src/constants/DEBUG';
         //await getExactLocation(page, post, titleSelector, exactLocationSelector);
 
         firstPost = write(post, firstPost, writeStream);
+        writeMongo(db, post);
         if (DEBUG) {
             print(post, true);
         } else {
@@ -86,6 +117,8 @@ import {DEBUG} from './src/constants/DEBUG';
 
     writeStream.write(']\n');
     writeStream.close();
+
+    //await client.close();
 
     await browser.close();
 })()

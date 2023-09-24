@@ -2,13 +2,14 @@
 <html lang="cs">
     <head>
         <meta charset="UTF-8">
-        <title>Jobs.cz Scraper</title>
         <link rel="stylesheet" href="styles.css">
+        <script src="script.js"></script>
+        <title>Jobs.cz Scraper</title>
     </head>
 
     <body>
         <div>
-            <h1>Jobs.cz Scraper</h1>
+            <h1>jobs<span class="orange">cz</span></h1>
             <form id="form">
                 <div class="formSection">
                     <label for="tags">Tagy (oddělené čárkou)</label>
@@ -43,7 +44,7 @@
                 </div>
 
                 <div class="formSection">
-                    <div id="radiusDiv" style="display:none">
+                    <div id="radiusDiv">
                         <label for="radius">Okolí</label>
                         <select id="radius" name="radius">
                             <option value="">+ 0 km</option>
@@ -75,18 +76,18 @@
                     <label for="employmentContract">Typ úvazku</label>
                     <div class="dropdown">
                         <button type="button" id="employmentContractButton">Typ úvazku</button>
-                        <div id="employmentContract" class="dropdownMenu">
+                        <div id="employmentContract" class="dropdownCheckboxes">
 
-                            <label>Úvazek</label>
+                            <label><b>Úvazek</b></label>
                             <label><input type="checkbox" class="employmentContractOption" value="plny-uvazek">Plný úvazek</label>
                             <label><input type="checkbox" class="employmentContractOption" value="zkraceny-uvazek">Zkrácený úvazek</label>
 
-                            <label>Typ spolupráce</label>
+                            <label><b>Typ spolupráce</b></label>
                             <label><input type="checkbox" class="employmentContractOption" value="employment-contract">Pracovní smlouva (HPP/VPP)</label>
                             <label><input type="checkbox" class="employmentContractOption" value="identification-number">Práce na živnostenský list</label>
                             <label><input type="checkbox" class="employmentContractOption" value="agreement">Práce na dohodu</label>
 
-                            <label>Stáže</label>
+                            <label><b>Stáže</b></label>
                             <label><input type="checkbox" class="employmentContractOption" value="internships">Stáže, praxe a trainee programy</label>
 
                         </div>
@@ -107,14 +108,10 @@
                     <label for="languageSkill">Jazyky</label>
                     <div class="dropdown">
                         <button type="button" id="languageSkillButton">Požadované jazyky</button>
-                        <div id="languageSkill" class="dropdownMenu">
-
-                            <div class="languageSkillOption">
-                                <input type="checkbox" class="languageSkillOption" id="cs" value="cs">
-                                <label for="cs">Jen čeština</label>
-                            </div>
-                            <label class="languageSkillOptionDescription" for="cs">Vybrat nabídky bez upřesnění jazyka</label>
-
+                        <div id="languageSkill" class="dropdownCheckboxes">
+                            <label><input type="checkbox" class="languageSkillOption" value="cs">Jen čeština<br>
+                                <span class="gray">- vybrat nabídky bez upřesnění jazyka</span>
+                            </label>
                             <label><input type="checkbox" class="languageSkillOption" value="en">Angličtina</label>
                             <label><input type="checkbox" class="languageSkillOption" value="de">Němčina</label>
                             <label><input type="checkbox" class="languageSkillOption" value="fr">Francouzština</label>
@@ -168,8 +165,6 @@
                     <button type="submit">Hledat</button>
                 </div>
             </form>
-
-            <script src="script.js"></script>
         </div>
     </body>
 </html>

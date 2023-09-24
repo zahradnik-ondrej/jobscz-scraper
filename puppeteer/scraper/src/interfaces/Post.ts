@@ -1,4 +1,7 @@
+import {ObjectId} from 'mongodb';
+
 interface Post {
+    _id?: ObjectId,
     url?: string | null,
     url2?: string,
     title?: string,

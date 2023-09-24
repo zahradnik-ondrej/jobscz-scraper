@@ -36,7 +36,7 @@ async function getTags(page: Page, post: Post, postSelector: string): Promise<vo
 }
 
 (async(): Promise<void> => {
-    const writeStream: WriteStream = fs.createWriteStream('job_posts.json', { flags: 'w' });
+    const writeStream: WriteStream = fs.createWriteStream('job-posts.json', { flags: 'w' });
     writeStream.write('[\n');
     let firstPost: boolean = true;
 

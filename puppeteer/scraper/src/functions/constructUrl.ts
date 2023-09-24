@@ -1,3 +1,6 @@
+import chalk from 'chalk';
+
+import {DEBUG} from '../constants/DEBUG';
 import {Parameters} from '../interfaces/Parameters';
 import {regions} from '../constants/regions';
 
@@ -65,7 +68,7 @@ function constructUrl(parameters: Parameters): string {
 
     if (parameters.disabled) {
         url = `${url}disabled=1&`;
-    } else {
+    } else if (parameters.suitableFor) {
         url = `${url}suitable-for=${parameters.suitableFor}&`;
     }
 
@@ -75,6 +78,11 @@ function constructUrl(parameters: Parameters): string {
         } else {
             url = `${url}locality[radius]=0`;
         }
+    }
+
+    if (DEBUG) {
+        console.log(chalk.bold('URL: ') + chalk.reset(chalk.gray(url)));
+        console.log();
     }
 
     return url;
