@@ -11,8 +11,8 @@
   "dependencies": {
     "@types/puppeteer": "^7.0.4",
     "mongodb": "^6.0.0",
-    "puppeteer": "^21.1.0",
-    "puppethelper": "^1.13.2",
+    "puppeteer": "^21.3.8",
+    "puppethelper": "^1.13.4",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   }
