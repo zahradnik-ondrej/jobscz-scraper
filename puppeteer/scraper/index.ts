@@ -27,9 +27,17 @@ import {DEBUG} from './src/constants/DEBUG';
 
     let params: Parameters;
     if (process.argv.length === 2) {
-        import('../web/job-params.json').then(parametersData => {
-            params = parametersData.default as unknown as Parameters;
-        });
+        try {
+            import('../web/job-params.json')
+                .then(parametersData => {
+                    params = parametersData.default as unknown as Parameters;
+                })
+                .catch(e => {
+                    params = parseArgs();
+                });
+        } catch(e) {
+            // this stays empty
+        }
 
         /*
         const collection: Collection = db.collection('parameters');
