@@ -7,8 +7,4 @@ cd web || exit
 
 npm install
 
-npm start &
-
-sleep 1
-
-xdg-open 'http://localhost:3000'
+npm start
