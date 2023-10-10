@@ -1,13 +1,9 @@
 {
   "name": "jobscz-scraper",
-  "description": "",
   "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@types/puppeteer": "^7.0.4",
     "mongodb": "^6.0.0",

@@ -18,11 +18,11 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 `cd puppeteer` or `cd playwright` or `cd selenium`
 
-`ts-node index.ts` in case of **Selenium**
+`./run.sh`
 
-`npm install` and `npm start` in case of **Playwright**
+### Output:
 
-`cd scraper`, `npm install` and `npm start` in case of **Puppeteer**
+You will find the scraped job postings in the `job-posts.json` file in the current project's directory or in the directory named `scraper` in the case of the `Puppeteer` script. [^1]
 
 ***
 
@@ -37,7 +37,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 Both **Playwright** and **Selenium** offer a support for multiple browsers aside from **Chrome** *(unlike **Puppeteer** which has only experimental support for **Edge** via [puppeteer-core](https://www.npmjs.com/package/puppeteer-core) and **Firefox** via [puppeteer-firefox](https://www.npmjs.com/package/puppeteer-firefox))*.
 
-[^1]: Note that the **Puppeteer** script scrapes more data than the other scripts and also provides other functionalities because it's the library that I chose to go with in my project.
+[^1]: Note that the **Puppeteer** script also provides a graphical interface through `http://localhost:3000/` because it's the library that I chose to go with in my project.
 
 [^2]: You can check out my [🧰 puppethelper - A Puppeteer helper package for automated QA web testing](https://github.com/zahradnik-ondrej/puppethelper) which has many useful functions for interacting with the web browser out-of-the-box plus a little extra.
 

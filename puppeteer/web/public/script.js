@@ -17,8 +17,10 @@ function dropdownCheckboxesToggleButton(checkboxesId, button, defaultText) {
                 }
             });
 
-            if (selectedOptions.length > 0) {
-                button.textContent = selectedOptions.join(' / ');
+            if (selectedOptions.length === 1) {
+                button.textContent = selectedOptions[0];
+            } else if (selectedOptions.length > 1) {
+                button.textContent = `${defaultText} (${selectedOptions.length})`;
             } else {
                 button.textContent = defaultText;
             }
