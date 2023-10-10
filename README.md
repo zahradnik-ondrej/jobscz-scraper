@@ -20,9 +20,11 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 `./run.sh`
 
+Go to `http://localhost:3000/` to access the input form for the **Puppeteer** script.
+
 ### Output:
 
-You will find the scraped job postings in the `job-posts.json` file in the current project's directory or in the subdirectory named `scraper` in the case of the `Puppeteer` script. [^1]
+You will find the scraped job postings in the `job-posts.json` file in the current project's directory or in the subdirectory named `scraper` in the case of the **Puppeteer** script. [^1]
 
 ***
 
