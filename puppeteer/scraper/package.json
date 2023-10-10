@@ -12,9 +12,7 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "@types/chalk": "^2.2.0",
     "@types/node": "^20.8.4",
-    "@types/puppeteer": "^7.0.4",
     "ts-node": "^10.9.1"
   }
 }

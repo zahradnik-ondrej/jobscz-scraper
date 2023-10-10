@@ -4,7 +4,6 @@ jobs-scraper.iml
 /puppeteer/scraper/job-posts.json
 /puppeteer/scraper/package-lock.json
 /puppeteer/web/package-lock.json
-/puppeteer/web/job-params.json
 
 /playwright/job-posts.json
 /playwright/package-lock.json

@@ -1,3 +1,1 @@
-npm install playwright chalk
-
-npm start
+npm install && npm start
