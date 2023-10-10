@@ -2,7 +2,7 @@ import puppeteer, { Browser, Page } from 'puppeteer';
 import * as ph from 'puppethelper';
 import chalk from 'chalk';
 import fs, { WriteStream } from 'fs';
-import { MongoClient, ObjectId, Db, Collection} from 'mongodb';
+//import { MongoClient, Db, Collection} from 'mongodb';
 
 const dbUrl: string = 'mongodb://localhost:27017';
 const dbName: string = 'jobPostings';
@@ -13,38 +13,30 @@ import {parseArgs} from './src/functions/parseArgs';
 import {constructUrl} from './src/functions/constructUrl';
 import {getSalary} from './src/functions/getSalary';
 import {getTags} from './src/functions/getTags';
-import {write} from './src/functions/write';
 import {print} from './src/functions/print';
+import {write} from './src/functions/write';
+import {writeMongo} from './src/functions/writeMongo';
 import {DEBUG} from './src/constants/DEBUG';
 
-async function writeMongo(db: Db, post: Post): Promise<void> {
-    const collection: Collection = db.collection('postings');
-    const query = { url: post.url };
-    const existingPost = await collection.findOne(query);
-
-    if (!existingPost) {
-        post._id = new ObjectId();
-        await collection.insertOne(post);
-    }
-}
-
 (async(): Promise<void> => {
+    /*
     const client: MongoClient = new MongoClient(dbUrl);
     await client.connect();
     let db: Db = client.db(dbName);
+    */
 
     let params: Parameters;
     if (process.argv.length === 2) {
+        import('../web/job-params.json').then(parametersData => {
+            params = parametersData.default as unknown as Parameters;
+        });
+
+        /*
         const collection: Collection = db.collection('parameters');
         const parametersData = await collection.findOne({});
         if (parametersData) {
             params = parametersData as Parameters;
         }
-
-        /*
-        import('../web/job-params.json').then(parametersData => {
-            params = parametersData.default as unknown as Parameters;
-        });
         */
     } else {
         params = parseArgs();
@@ -103,7 +95,7 @@ async function writeMongo(db: Db, post: Post): Promise<void> {
         //await getExactLocation(page, post, titleSelector, exactLocationSelector);
 
         firstPost = write(post, firstPost, writeStream);
-        await writeMongo(db, post);
+        //await writeMongo(db, post);
         if (DEBUG) {
             print(post, true);
         } else {
@@ -116,7 +108,7 @@ async function writeMongo(db: Db, post: Post): Promise<void> {
     writeStream.write(']\n');
     writeStream.close();
 
-    await client.close();
+    //await client.close();
 
     await browser.close();
 })()
