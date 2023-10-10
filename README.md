@@ -8,7 +8,6 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 *The libraries used are Puppeteer [^1], Playwright and Selenium.*
 
-
 *The instructions below have been made to work on **Linux** operating systems, specifically on **Ubuntu** (20.04 and 22.04) along with the prerequisite of having **Git** installed on your system.*
 ***
 
@@ -41,7 +40,7 @@ You will find the scraped job postings in the `job-posts.json` file in the curre
 
 Both **Playwright** and **Selenium** offer a support for multiple browsers aside from **Chrome** *(unlike **Puppeteer** which has only experimental support for **Edge** via [puppeteer-core](https://www.npmjs.com/package/puppeteer-core) and **Firefox** via [puppeteer-firefox](https://www.npmjs.com/package/puppeteer-firefox))*.
 
-[^1]: Note that the **Puppeteer** script also provides a graphical interface through `http://localhost:3000/` with the option to specify parameters of which job listings to scrape because it's the library that I chose to go with in my project.
+[^1]: Note that the **Puppeteer** script also provides a graphical web interface through `http://localhost:3000/` with the option to specify parameters of which job listings to scrape because it's the library that I chose to go with in my project.
 
 [^2]: You can check out my [🧰 puppethelper - A Puppeteer helper package for automated QA web testing](https://github.com/zahradnik-ondrej/puppethelper) which has many useful functions for interacting with the web browser out-of-the-box plus a little extra.
 
