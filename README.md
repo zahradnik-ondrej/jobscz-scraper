@@ -22,7 +22,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 `./run.sh`
 
-Go to `http://localhost:3000/` to access the input form for the **Puppeteer** script.
+Go to `http://localhost:3000/` to access the input form for the **Puppeteer** [^1] script.
 
 ### Output:
 
