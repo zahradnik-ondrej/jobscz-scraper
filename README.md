@@ -8,7 +8,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 *The libraries used are Puppeteer [^1], Playwright and Selenium.*
 
-(*The instructions below have been made to work on **Linux** operating systems, specifically on **Ubuntu** (20.04 and 22.04) along with the prerequisite of having **Git** and **npm** installed on your system.*)
+*(The instructions below have been made to work on **Linux** operating systems, specifically on **Ubuntu** (20.04 and 22.04) along with the prerequisite of having **Git** and **npm** installed on your system.)*
 
 ***
 
