@@ -6,10 +6,10 @@ import path from 'path';
 import * as ph from 'puppethelper';
 import http from 'http';
 
-import { MongoClient, Db} from 'mongodb';
+//import { MongoClient, Db} from 'mongodb';
 const dbUrl: string = 'mongodb://localhost:27017';
 const dbName: string = 'jobPostings';
-const client: MongoClient = new MongoClient(dbUrl);
+//const client: MongoClient = new MongoClient(dbUrl);
 
 const __filename: string = fileURLToPath(import.meta.url);
 const __dirname: string = path.dirname(__filename);
@@ -26,14 +26,14 @@ const server = http.createServer(app);
 app.post('/submit', async (req: Request, res: Response): Promise<void> => {
     const jobParams: string = JSON.stringify(req.body, null, 2);
 
+    /*
     await client.connect();
     let db: Db = client.db(dbName);
 
     await db.dropDatabase();
-    //const collection: Collection = db.collection('parameters');
-    //await collection.deleteMany({});
 
     await db.collection('parameters').insertOne(req.body);
+    */
 
     fs.writeFile('job-params.json', jobParams, (err) => {
         if (err) {

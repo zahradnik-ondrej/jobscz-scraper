@@ -15,7 +15,7 @@ import {getSalary} from './src/functions/getSalary';
 import {getTags} from './src/functions/getTags';
 import {print} from './src/functions/print';
 import {write} from './src/functions/write';
-import {writeMongo} from './src/functions/writeMongo';
+//import {writeMongo} from './src/functions/writeMongo';
 import {DEBUG} from './src/constants/DEBUG';
 
 (async(): Promise<void> => {
