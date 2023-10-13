@@ -14,7 +14,7 @@ A programming exercise and an experiment to determine which **JavaScript / TypeS
 
 ### Installation:
 
-`clone https://github.com/zahradnik-ondrej/jobscz-scraper.git`
+`git clone https://github.com/zahradnik-ondrej/jobscz-scraper.git`
 
 `cd jobscz-scraper`
 
